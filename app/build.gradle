@@ -33,6 +33,10 @@ android {
         buildConfigField "String", "COLLECTION_CHATROOMS", "\"ChatRooms\""
     }
 
+    buildFeatures {
+        viewBinding true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -83,8 +87,9 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.8.3"
     implementation "androidx.paging:paging-runtime-ktx:3.3.0"
 
-    //Event-Bus
-    implementation 'org.greenrobot:eventbus:3.3.1'
+    // LiveEvent & Event-Bus
+    implementation "com.github.hadilq.liveevent:liveevent:1.2.0"
+    implementation "org.greenrobot:eventbus:3.3.1"
 
     // Hilt
     implementation "com.google.dagger:hilt-android:2.48"
