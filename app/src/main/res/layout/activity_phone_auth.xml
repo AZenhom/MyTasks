@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    tools:context=".ui.authentication.phone_auth.PhoneAuthActivity">
+
+    <LinearLayout
+        android:id="@+id/llLabels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/_16sdp"
+        android:paddingVertical="@dimen/_40sdp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:gravity="center"
+            android:text="@string/welcome_to_my_tasks"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/_14sdp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:gravity="center"
+            android:text="@string/phone_auth_rationale"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/_11sdp" />
+    </LinearLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ivBackground"
+        android:layout_width="@dimen/_48sdp"
+        android:layout_height="@dimen/_48sdp"
+        android:src="@color/colorWhite"
+        app:civ_border_color="@color/colorPrimary"
+        app:civ_border_width="@dimen/_1sdp"
+        app:layout_constraintBottom_toBottomOf="@id/llLabels"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/llLabels" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivSms"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:src="@drawable/ic_sms"
+        android:tint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@id/ivBackground"
+        app:layout_constraintEnd_toEndOf="@id/ivBackground"
+        app:layout_constraintStart_toStartOf="@id/ivBackground"
+        app:layout_constraintTop_toTopOf="@id/ivBackground" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/lblSmsSent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_21sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:fontFamily="@font/poppins_regular"
+        android:textAlignment="center"
+        android:text="@string/sms_has_been_sent"
+        android:textColor="@color/textColor"
+        android:textSize="@dimen/_12sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivBackground"
+        tools:ignore="UnusedAttribute" />
+
+    <com.mukesh.OtpView
+        android:id="@+id/pinView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:inputType="number"
+        android:itemBackground="@color/colorBackground"
+        android:textColor="@color/textColor"
+        app:OtpCursorColor="@color/colorSecondary"
+        app:OtpItemCount="6"
+        app:OtpLineColor="@color/colorSecondary"
+        app:OtpViewType="line"
+        android:textSize="@dimen/_16sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lblSmsSent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/lblResend"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_21sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:fontFamily="@font/poppins_regular"
+        android:gravity="center"
+        android:justificationMode="inter_word"
+        android:text="@string/resend_question"
+        android:textColor="@color/textColor"
+        android:textSize="@dimen/_12sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pinView"
+        tools:ignore="UnusedAttribute" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnResend"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="@string/resend_code"
+        app:layout_constraintTop_toBottomOf="@id/lblResend"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCodeVerify"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:text="@string/verify_phone_number"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

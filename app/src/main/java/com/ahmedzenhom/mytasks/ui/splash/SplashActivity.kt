@@ -9,6 +9,8 @@ import android.view.animation.AnimationUtils
 import androidx.activity.viewModels
 import com.ahmedzenhom.mytasks.R
 import com.ahmedzenhom.mytasks.databinding.ActivitySplashBinding
+import com.ahmedzenhom.mytasks.ui.authentication.login.LoginActivity
+import com.ahmedzenhom.mytasks.ui.host.HostActivity
 import com.ahmedzenhom.mytasks.utils.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -53,12 +55,12 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
     }
 
     private fun openMainScreen() {
-        //startActivity(HostActivity.getIntent(this))
-        //finish()
+        startActivity(HostActivity.getIntent(this))
+        finish()
     }
 
     private fun openLoginScreen() {
-        //startActivity(LoginActivity.getIntent(this))
-        //finish()
+        startActivity(LoginActivity.getIntent(this))
+        finish()
     }
 }

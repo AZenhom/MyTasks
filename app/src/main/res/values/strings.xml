@@ -3,4 +3,27 @@
     <string name="click_twice">Please click BACK again to exit</string>
     <string name="check_your_internet_connection">Please check your internet connection</string>
     <string name="an_error_has_occurred">An unexpected error has occurred</string>
+    <string name="login">Sign In</string>
+    <string name="create_an_account">Create an account</string>
+    <string name="or">Or</string>
+    <string name="country_code">Country Code</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="phone_number_hint" translatable="false">Ex: 012 345 678 90</string>
+    <string name="welcome_to_my_tasks">Welcome to MyTasks</string>
+    <string name="phone_auth_rationale">We\'ll be taking few minutes from you to verify your phone number</string>
+    <string name="verify_phone_number">Verify Phone Number</string>
+    <string name="resend_code">Resend Code</string>
+    <string name="resend_question">Didn\'t receive a Code? Resend in %1$dS</string>
+    <string name="sms_has_been_sent">An SMS message containing a verification code has been sent to your phone number (%1$s)</string>    <string name="error_invalid_phone">Please enter valid phone number</string>
+    <string name="phone_verification_failed">Phone verification failed</string>
+    <string name="invalid_verification_code">Invalid Verification Code</string>
+    <string name="connection_error">Connection Error</string>
+    <string name="internet_try_again">Please check your internet connection and try again</string>
+    <string name="try_again">Try Again</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="nickname">Nickname</string>
+    <string name="name_hint" translatable="false">Donald Duck</string>
+    <string name="phone_number_not_registered">This phone number is not registered</string>
+    <string name="phone_number_already_registered">This phone number is already registered</string>
+    <string name="please_enter_you_name">Please enter you nickname</string>
 </resources>

@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.ahmedzenhom.mytasks.data.model.AccountModel
+import com.ahmedzenhom.mytasks.data.model.FirebaseUserModel
 import com.google.gson.Gson
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -20,6 +21,7 @@ private val Context.accountDataStore: DataStore<Preferences> by preferencesDataS
 class AccountDataStore @Inject constructor(@ApplicationContext val context: Context) {
 
     private val accountModelPref = stringPreferencesKey("accountModel")
+    private val firebaseUserPref = stringPreferencesKey("firebaseUser")
     private val accessTokenPref = stringPreferencesKey("accessToken")
 
     suspend fun setAccountModel(model: AccountModel) {
@@ -36,6 +38,23 @@ class AccountDataStore @Inject constructor(@ApplicationContext val context: Cont
                 null
             else
                 Gson().fromJson(json, AccountModel::class.java)
+        }.first()
+    }
+
+    suspend fun setFirebaseUser(user: FirebaseUserModel) {
+        context.accountDataStore.edit {
+            val json: String = Gson().toJson(user, FirebaseUserModel::class.java)
+            it[firebaseUserPref] = json
+        }
+    }
+
+    suspend fun getFirebaseUser(): FirebaseUserModel? {
+        return context.accountDataStore.data.map {
+            val json = it[firebaseUserPref]
+            return@map if (json == null)
+                null
+            else
+                Gson().fromJson(json, FirebaseUserModel::class.java)
         }.first()
     }
 

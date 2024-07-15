@@ -35,10 +35,10 @@ abstract class BaseRepository {
             FirebaseCrashlytics.getInstance().recordException(httpException)
             val response = httpException.response()!!.errorBody()!!.string()
             val errorResponse: ErrorResponse = Gson().fromJson(response, errorType)
-            if (!errorResponse.errors.isNullOrEmpty()) {
+            if (!errorResponse.error.isNullOrEmpty()) {
                 return ErrorModel.Network(
                     httpException.code(),
-                    errorResponse.errors.first().message
+                    errorResponse.error
                 )
             } else
                 return ErrorModel.Unknown

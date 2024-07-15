@@ -25,12 +25,12 @@ android {
 
         // BuildConfigs
         android.buildFeatures.buildConfig true
-        buildConfigField "String", "SERVER_ADDRESS", "\"http://52.1.111.53:8080/\""
-        buildConfigField "String", "BASE_URL", "\"api/v1/\""
-        // FIREBASE_COLLECTIONS
-        buildConfigField "String", "COLLECTION_USERS", "\"Users\""
-        buildConfigField "String", "COLLECTION_MESSAGES", "\"Messages\""
-        buildConfigField "String", "COLLECTION_CHATROOMS", "\"ChatRooms\""
+
+        buildConfigField "String", "AUTH_SERVER_ADDRESS", "\"http://ec2-16-171-181-63.eu-north-1.compute.amazonaws.com:8080/\""
+        buildConfigField "String", "AUTH_BASE_URL", "\"firebase/\""
+
+        buildConfigField "String", "FIREBASE_REST_ADDRESS", "\"http://0.0.0.0:8080/\""
+        buildConfigField "String", "TASKS_BASE_URL", "\"tasks/\""
     }
 
     buildFeatures {
@@ -59,6 +59,8 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.activity:activity:1.9.0'
+
     // Testing
     testImplementation "junit:junit:4.13.2"
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
@@ -105,9 +107,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:33.1.2')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-auth'
-    implementation 'com.google.firebase:firebase-appcheck-playintegrity'
-    implementation 'com.google.firebase:firebase-appcheck-debug'
+    implementation 'com.google.firebase:firebase-auth-ktx'
 
     //Room DB & Datastore
     implementation "androidx.room:room-runtime:2.6.1"
