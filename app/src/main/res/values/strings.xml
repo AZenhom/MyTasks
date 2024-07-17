@@ -26,4 +26,5 @@
     <string name="phone_number_not_registered">This phone number is not registered</string>
     <string name="phone_number_already_registered">This phone number is already registered</string>
     <string name="please_enter_you_name">Please enter you nickname</string>
+    <string name="all_subtasks_are_completed_error">Can\'t update status as all subtasks are marked completed. Please change their status first</string>
 </resources>
