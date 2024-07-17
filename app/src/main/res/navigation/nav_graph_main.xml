@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_main"
+    app:startDestination="@id/allTasksFragment">
+
+    <action
+        android:id="@+id/action_global_serviceFragment"
+        app:destination="@id/allTasksFragment" />
+
+    <fragment
+        android:id="@+id/allTasksFragment"
+        android:name="com.ahmedzenhom.mytasks.ui.tasks.all_tasks.AllTasksFragment"
+        android:label="@string/all_tasks"
+        tools:layout="@layout/fragment_all_tasks"/>
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.ahmedzenhom.mytasks.ui.profile.ProfileFragment"
+        android:label="@string/profile"
+        tools:layout="@layout/fragment_profile" />
+
+
+
+
+</navigation>

@@ -39,6 +39,8 @@ class AuthRepository @Inject constructor(
 
     // Datastore
 
+    suspend fun getAccount() = accountDataStore.getAccountModel()
+
     suspend fun saveFirebaseUser(firebaseUser: FirebaseUser) {
         accountDataStore
             .setFirebaseUser(FirebaseUserModel.fromFirebaseUser(firebaseUser))
@@ -53,6 +55,5 @@ class AuthRepository @Inject constructor(
             FirebaseAuth.getInstance().currentUser?.getIdToken(true)?.await()?.token ?: return
         accountDataStore.setAccessToken(token)
     }
-
 
 }

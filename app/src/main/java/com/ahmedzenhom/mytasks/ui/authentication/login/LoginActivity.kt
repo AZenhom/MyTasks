@@ -41,7 +41,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK)
                 viewModel
-                    .registerUser(binding.etName.toString().trim())
+                    .registerUser(binding.etName.text.toString().trim())
                     .observe(this@LoginActivity) { navigateToMain() }
         }
 
