@@ -18,6 +18,11 @@
     <color name="colorSwitchTrackEnabled">#4DF6BE00</color>
     <color name="colorSwitchTrackDisabled">#4D808080</color>
 
+    <color name="colorStatusGray">#808080</color>
+    <color name="colorStatusOrange">#FFA900</color>
+    <color name="colorStatusGreen">#388E3C</color>
+    <color name="colorStatusRed">#D50000</color>
+
     <color name="colorTransparent">#00000000</color>
     <color name="colorDim">#4D000000</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">

@@ -16,6 +16,10 @@ class TasksRepository @Inject constructor(
     private val tasksDao: TasksDao,
 ) : BaseRepository() {
 
+    suspend fun getAllTasksAfterSync(): List<TaskModel> = execute {
+        return@execute getAllTasks()
+    }
+
     suspend fun getAllTasks(): List<TaskModel> = execute {
         return@execute convertTasksEntitiesToModels(tasksDao.getAllTasks())
     }

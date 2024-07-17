@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cvRootView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/_10sdp"
+    android:layout_marginTop="@dimen/_8sdp"
+    app:cardBackgroundColor="@color/elevatedCardBackground"
+    app:strokeWidth="@dimen/_1sdp"
+    app:strokeColor="@color/colorSecondary"
+    app:cardCornerRadius="@dimen/_4sdp"
+    app:cardElevation="@dimen/_5sdp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clRootView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true">>
+
+        <View
+            android:id="@+id/vTaskStatus"
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="0dp"
+            tools:background="@color/errorColor"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvTaskTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:textAlignment="viewStart"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/_14sdp"
+            app:layout_constraintEnd_toStartOf="@id/ivArrow"
+            app:layout_constraintStart_toEndOf="@id/vTaskStatus"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Do the laundry" />
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/lblStartDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:drawableStart="@drawable/ic_date"
+            android:drawablePadding="@dimen/_4sdp"
+            android:drawableTint="@color/textColorGrey"
+            android:ellipsize="end"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/_11sdp"
+            app:layout_constraintStart_toEndOf="@id/vTaskStatus"
+            app:layout_constraintTop_toBottomOf="@+id/tvTaskTitle"
+            android:text="@string/start_date" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvStartDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:drawablePadding="@dimen/_4sdp"
+            android:drawableTint="@color/textColorGrey"
+            android:ellipsize="end"
+            android:fontFamily="@font/poppins_regular"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/_11sdp"
+            app:layout_constraintEnd_toStartOf="@id/ivArrow"
+            app:layout_constraintStart_toEndOf="@id/lblStartDate"
+            app:layout_constraintTop_toTopOf="@+id/lblStartDate"
+            app:layout_constraintBottom_toBottomOf="@id/lblStartDate"
+            tools:text="Wed, 12 Aug 10:00 AM" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/lblEndDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:drawableStart="@drawable/ic_date"
+            android:drawablePadding="@dimen/_4sdp"
+            android:drawableTint="@color/textColorGrey"
+            android:ellipsize="end"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/_11sdp"
+            app:layout_constraintStart_toEndOf="@id/vTaskStatus"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblStartDate"
+            android:text="@string/end_date" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvEndDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:drawablePadding="@dimen/_4sdp"
+            android:drawableTint="@color/textColorGrey"
+            android:ellipsize="end"
+            android:fontFamily="@font/poppins_regular"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/_11sdp"
+            app:layout_constraintEnd_toStartOf="@id/ivArrow"
+            app:layout_constraintStart_toEndOf="@id/lblEndDate"
+            app:layout_constraintTop_toTopOf="@+id/lblEndDate"
+            app:layout_constraintBottom_toBottomOf="@id/lblEndDate"
+            tools:text="Wed, 12 Aug 10:00 AM" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_8sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_next"
+            app:tint="@color/textColorGrey" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

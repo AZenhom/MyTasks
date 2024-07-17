@@ -1,5 +1,7 @@
 package com.ahmedzenhom.mytasks.data.model
 
+import androidx.annotation.ColorRes
+import com.ahmedzenhom.mytasks.R
 import com.ahmedzenhom.mytasks.data.local.db.entities.TaskEntity
 import java.io.Serializable
 
@@ -37,6 +39,19 @@ enum class TaskStatus(val value: Int) {
     COMPLETED(2);
 
     companion object {
-        fun fromInt(value: Int?) = entries.firstOrNull { it.value == value }?: PENDING
+        fun fromInt(value: Int?) = entries.firstOrNull { it.value == value } ?: PENDING
     }
 }
+
+@ColorRes
+fun TaskModel.getStatusColor(): Int {
+    return status.colorRes(endDate < System.currentTimeMillis())
+}
+
+@ColorRes
+private fun TaskStatus.colorRes(isExpired: Boolean = false) =
+    if (isExpired) R.color.colorStatusRed else when (this) {
+        TaskStatus.PENDING -> R.color.colorStatusGray
+        TaskStatus.IN_PROGRESS -> R.color.colorStatusOrange
+        TaskStatus.COMPLETED -> R.color.colorStatusRed
+    }
