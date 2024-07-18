@@ -1,7 +1,6 @@
 package com.ahmedzenhom.mytasks.ui.tasks.task_internal
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.ahmedzenhom.mytasks.R
 import com.ahmedzenhom.mytasks.data.model.TaskModel
@@ -28,7 +27,7 @@ class TaskInternalViewModel @Inject constructor(
     fun getTask() = safeLauncher {
         if (taskId == null) return@safeLauncher
         showLoading()
-        task = tasksRepository.getTaskById(taskId)
+        task = tasksRepository.getTaskByIdAfterSync(taskId)
         _taskLiveData.value = task
         hideLoading()
     }

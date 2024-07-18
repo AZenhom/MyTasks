@@ -24,6 +24,7 @@ class SplashViewModel @Inject constructor(
     private fun checkNavigation() = safeLauncher {
         val isLoggedIn = settingsRepository.isLoggedIn()
         if (!isLoggedIn) authRepository.logout()
+        else authRepository.refreshAndSaveIdToken()
         _navigationLiveData.value = when {
             !isLoggedIn -> NavigationCases.TO_LOGIN
             else -> NavigationCases.TO_MAIN_SCREEN

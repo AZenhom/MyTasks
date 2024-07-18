@@ -1,6 +1,8 @@
 package com.ahmedzenhom.mytasks.data.repository
 
 import com.ahmedzenhom.mytasks.R
+import com.ahmedzenhom.mytasks.data.local.datastore.AccountDataStore
+import com.ahmedzenhom.mytasks.data.local.datastore.SettingsDataStore
 import com.ahmedzenhom.mytasks.data.local.db.dao.TasksDao
 import com.ahmedzenhom.mytasks.data.local.db.entities.TaskEntity
 import com.ahmedzenhom.mytasks.data.local.db.entities.toModel
@@ -9,16 +11,62 @@ import com.ahmedzenhom.mytasks.data.model.TaskStatus
 import com.ahmedzenhom.mytasks.data.model.TaskStatus.COMPLETED
 import com.ahmedzenhom.mytasks.data.model.TaskStatus.IN_PROGRESS
 import com.ahmedzenhom.mytasks.data.model.TaskStatus.PENDING
+import com.ahmedzenhom.mytasks.data.model.TasksSnapshotModel
 import com.ahmedzenhom.mytasks.data.model.toEntity
+import com.ahmedzenhom.mytasks.data.remote.firebase_rest.FirebaseRestApiService
 import javax.inject.Inject
 
 class TasksRepository @Inject constructor(
     private val tasksDao: TasksDao,
+    private val settingsDataStore: SettingsDataStore? = null,
+    private val accountDataStore: AccountDataStore? = null,
+    private val firebaseRestApiService: FirebaseRestApiService? = null
 ) : BaseRepository() {
 
+    // Syncing
+
     suspend fun getAllTasksAfterSync(): List<TaskModel> = execute {
+        syncData()
         return@execute getAllTasks()
     }
+
+    suspend fun getTaskByIdAfterSync(taskId: Int): TaskModel? = execute {
+        syncData()
+        return@execute getTaskById(taskId)
+    }
+
+    private suspend fun syncData() {
+        val localTasks = getAllTasks()
+        val lastLocalUpdate = settingsDataStore!!.getLastTasksLocalUpdate()
+        val lastRemoteSnapshot = getLastTasksSnapshot()
+        if (lastLocalUpdate > (lastRemoteSnapshot.updatedAt ?: 0)) {
+            firebaseRestApiService!!.setLastTasksSnapshot(
+                accountDataStore!!.getAccountModel()?.id ?: return,
+                TasksSnapshotModel(localTasks, lastLocalUpdate)
+            )
+        } else if (lastLocalUpdate < (lastRemoteSnapshot.updatedAt ?: 0)) {
+            tasksDao.deleteAllTask()
+            tasksDao.insertTasks(
+                convertTasksModelsToEntities(
+                    lastRemoteSnapshot.tasks ?: emptyList()
+                )
+            )
+        }
+    }
+
+    private suspend fun setLastLocalUpdateNow() =
+        settingsDataStore?.setLastTasksLocalUpdate(System.currentTimeMillis())
+
+    // Remote
+
+    private suspend fun getLastTasksSnapshot(): TasksSnapshotModel {
+        return try {
+            firebaseRestApiService!!.getLastTasksSnapshot(accountDataStore!!.getAccountModel()!!.id!!)
+        } catch (e: Exception) {
+            TasksSnapshotModel(emptyList(), 0)
+        }
+    }
+    // Local
 
     suspend fun getAllTasks(): List<TaskModel> = execute {
         return@execute convertTasksEntitiesToModels(tasksDao.getAllTasks())
@@ -59,6 +107,7 @@ class TasksRepository @Inject constructor(
         tasksDao.insertTasks(listOf(taskEntity))
         if (taskEntity.status == PENDING.value && parentTaskId != null)
             updateTaskStatus(parentTaskId, PENDING)
+        setLastLocalUpdateNow()
     }
 
     suspend fun updateTaskDetails(
@@ -74,6 +123,7 @@ class TasksRepository @Inject constructor(
         taskEntity.startDate = startDate
         taskEntity.endDate = endDate
         tasksDao.updateTask(taskEntity)
+        setLastLocalUpdateNow()
     }
 
     suspend fun updateTaskStatus(taskId: Int, status: TaskStatus): Pair<Boolean, Int?> =
@@ -105,6 +155,7 @@ class TasksRepository @Inject constructor(
                     tasksDao.updateTask(currentTask)
                 }
             }
+            setLastLocalUpdateNow()
 
             // Changing the status all the way up
             var parentTask: TaskEntity? = tasksDao.getTaskById(
@@ -121,6 +172,8 @@ class TasksRepository @Inject constructor(
                 tasksDao.updateTask(parentTask)
                 parentTask = tasksDao.getTaskById(parentTask.parentId ?: break)
             }
+
+            setLastLocalUpdateNow()
             return@execute (true to null)
         }
 
@@ -134,7 +187,10 @@ class TasksRepository @Inject constructor(
             val subTasks = tasksDao.getSubTasksByParentId(currentTask.id)
             subTasks.forEach { tasksToDelete.addLast(it) }
         }
+        setLastLocalUpdateNow()
     }
+
+    // Utils
 
     private fun convertTasksModelsToEntities(list: List<TaskModel>): List<TaskEntity> {
         val entitiesList = mutableListOf<TaskEntity>()

@@ -29,7 +29,7 @@ android {
         buildConfigField "String", "AUTH_SERVER_ADDRESS", "\"http://ec2-16-171-181-63.eu-north-1.compute.amazonaws.com:8080/\""
         buildConfigField "String", "AUTH_BASE_URL", "\"firebase/\""
 
-        buildConfigField "String", "FIREBASE_REST_ADDRESS", "\"http://0.0.0.0:8080/\""
+        buildConfigField "String", "FIREBASE_REST_ADDRESS", "\"https://mytasks-2024-default-rtdb.firebaseio.com/\""
         buildConfigField "String", "TASKS_BASE_URL", "\"tasks/\""
     }
 

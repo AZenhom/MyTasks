@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -17,12 +18,11 @@ private val Context.settingsDataStore: DataStore<Preferences> by preferencesData
 class SettingsDataStore @Inject constructor(@ApplicationContext val context: Context) {
 
     private val languagePref = stringPreferencesKey("language")
-    private val languageFlowPref = stringPreferencesKey("languageFlow")
+    private val lastTasksLocalUpdatePref = longPreferencesKey("lastTasksLocalUpdate")
 
     suspend fun setLanguage(value: String) {
         context.settingsDataStore.edit {
             it[languagePref] = value
-            it[languageFlowPref] = value
         }
     }
 
@@ -32,9 +32,15 @@ class SettingsDataStore @Inject constructor(@ApplicationContext val context: Con
         }.first()
     }
 
-    fun getLanguageFlow(): Flow<String?> {
-        return context.settingsDataStore.data.map {
-            it[languageFlowPref] ?: "en"
+    suspend fun setLastTasksLocalUpdate(value: Long) {
+        context.settingsDataStore.edit {
+            it[lastTasksLocalUpdatePref] = value
         }
+    }
+
+    suspend fun getLastTasksLocalUpdate(): Long {
+        return context.settingsDataStore.data.map {
+            it[lastTasksLocalUpdatePref] ?: 0
+        }.first()
     }
 }

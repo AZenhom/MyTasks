@@ -17,8 +17,16 @@ data class TaskModel(
     var endDate: Long,
     var status: TaskStatus,
     val createdAt: Long,
-    val subTasks: MutableList<TaskModel> = mutableListOf(),
-) : Serializable
+    private var _subTasks: MutableList<TaskModel>? = mutableListOf(),
+) : Serializable {
+    val subTasks: MutableList<TaskModel>
+        get() {
+            if (_subTasks == null) {
+                _subTasks = mutableListOf()
+            }
+            return _subTasks!!
+        }
+}
 
 data class TasksSnapshotModel(
     val tasks: List<TaskModel>? = null,

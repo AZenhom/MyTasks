@@ -5,6 +5,7 @@ import com.ahmedzenhom.mytasks.data.local.datastore.AccountDataStore
 import com.ahmedzenhom.mytasks.data.remote.BasicHeaderInterceptor
 import com.ahmedzenhom.mytasks.data.remote.FirebaseRestInterceptor
 import com.ahmedzenhom.mytasks.data.remote.auth.AuthApiService
+import com.ahmedzenhom.mytasks.data.remote.firebase_rest.FirebaseRestApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -92,6 +93,11 @@ class NetworkModule {
     @Provides
     fun getAuthService(@AuthServerRetrofit retrofit: Retrofit): AuthApiService {
         return retrofit.create(AuthApiService::class.java)
+    }
+
+    @Provides
+    fun getFirebaseRestService(@FirebaseRestRetrofit retrofit: Retrofit): FirebaseRestApiService {
+        return retrofit.create(FirebaseRestApiService::class.java)
     }
 
 }

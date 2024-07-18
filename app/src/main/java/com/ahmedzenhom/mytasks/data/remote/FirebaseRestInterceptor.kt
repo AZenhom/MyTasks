@@ -29,7 +29,7 @@ class FirebaseRestInterceptor @Inject constructor(
             val originalUrl = chain.request().url
             val newUrl = originalUrl
                 .newBuilder()
-                .addQueryParameter("access_token", accessToken)
+                .addQueryParameter("auth", accessToken)
                 .build()
             request.url(newUrl)
             request = request.addHeader("Authorization", "Bearer $accessToken")
