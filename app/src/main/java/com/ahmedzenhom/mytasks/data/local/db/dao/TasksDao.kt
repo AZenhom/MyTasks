@@ -15,7 +15,7 @@ interface TasksDao {
     @Query("select * FROM TaskEntity where id = :id limit 1")
     suspend fun getTaskById(id: Int): TaskEntity?
 
-    @Query("select * FROM TaskEntity where parentId = :id")
+    @Query("select * FROM TaskEntity where parentId = :id ORDER BY createdAt DESC")
     suspend fun getSubTasksByParentId(id: Int): List<TaskEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

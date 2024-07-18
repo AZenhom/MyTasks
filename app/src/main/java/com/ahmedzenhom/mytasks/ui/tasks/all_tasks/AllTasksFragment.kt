@@ -1,12 +1,14 @@
 package com.ahmedzenhom.mytasks.ui.tasks.all_tasks
 
-    import androidx.fragment.app.viewModels
+import androidx.fragment.app.viewModels
 import com.ahmedzenhom.mytasks.R
 import com.ahmedzenhom.mytasks.data.model.TaskModel
 import com.ahmedzenhom.mytasks.databinding.FragmentAllTasksBinding
 import com.ahmedzenhom.mytasks.ui.tasks.adapter.TasksAdapter
 import com.ahmedzenhom.mytasks.ui.tasks.add_edit_task.AddTaskDialog
+import com.ahmedzenhom.mytasks.ui.tasks.task_internal.TaskInternalActivity
 import com.ahmedzenhom.mytasks.utils.base.BaseFragment
+import com.ahmedzenhom.mytasks.utils.ui.showIfNotAdded
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -53,8 +55,10 @@ class AllTasksFragment :
                 viewModel.createNewTask(title, description, startDate, endDate)
                     .observe(viewLifecycleOwner) { showSuccessMsg(getString(R.string.task_created_successfully)) }
             }
-        ).show(childFragmentManager, AddTaskDialog.TAG)
+        ).showIfNotAdded(childFragmentManager, AddTaskDialog.TAG)
     }
 
-    private fun navigateToTaskInternal(taskModel: TaskModel) {}
+    private fun navigateToTaskInternal(taskModel: TaskModel) {
+        startActivity(TaskInternalActivity.getIntent(requireContext(), taskModel.id))
+    }
 }

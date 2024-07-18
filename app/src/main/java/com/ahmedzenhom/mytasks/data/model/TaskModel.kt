@@ -1,8 +1,11 @@
 package com.ahmedzenhom.mytasks.data.model
 
+import android.content.Context
 import androidx.annotation.ColorRes
+import androidx.annotation.StringRes
 import com.ahmedzenhom.mytasks.R
 import com.ahmedzenhom.mytasks.data.local.db.entities.TaskEntity
+import com.ahmedzenhom.mytasks.utils.others.Filterable
 import java.io.Serializable
 
 data class TaskModel(
@@ -40,7 +43,35 @@ enum class TaskStatus(val value: Int) {
 
     companion object {
         fun fromInt(value: Int?) = entries.firstOrNull { it.value == value } ?: PENDING
+
+        fun getFilterableTaskStatusList(context: Context) =
+            TaskStatus.entries.map { it.toFilterableTaskStatus(context) }
     }
+
+
+}
+
+fun TaskStatus.toFilterableTaskStatus(context: Context) = FilterableTaskStatus(context, this)
+
+data class FilterableTaskStatus(
+    @Transient
+    var context: Context,
+    val status: TaskStatus,
+) : Serializable, Filterable {
+    override fun getFilterableId(): String {
+        return context.getString(status.stringRes())
+    }
+
+    override fun getFilterableName(): String? {
+        return context.getString(status.stringRes())
+    }
+}
+
+@StringRes
+fun TaskStatus.stringRes(): Int = when (this) {
+    TaskStatus.PENDING -> R.string.pending
+    TaskStatus.IN_PROGRESS -> R.string.in_progress
+    TaskStatus.COMPLETED -> R.string.completed
 }
 
 @ColorRes
@@ -53,5 +84,5 @@ private fun TaskStatus.colorRes(isExpired: Boolean = false) =
     if (isExpired) R.color.colorStatusRed else when (this) {
         TaskStatus.PENDING -> R.color.colorStatusGray
         TaskStatus.IN_PROGRESS -> R.color.colorStatusOrange
-        TaskStatus.COMPLETED -> R.color.colorStatusRed
+        TaskStatus.COMPLETED -> R.color.colorStatusGreen
     }

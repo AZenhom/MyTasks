@@ -38,7 +38,7 @@ class TasksAdapter(
                 tvTaskTitle.text = item.title
                 tvStartDate.text = DateUtils.getFormattedDate(Date(item.startDate))
                 tvEndDate.text = DateUtils.getFormattedDate(Date(item.endDate))
-                vTaskStatus.setBackgroundColor(item.getStatusColor())
+                vTaskStatus.setBackgroundColor(vTaskStatus.context.getColor(item.getStatusColor()))
                 // Click Listeners
                 clRootView.setOnClickListener { onItemClick?.invoke(item) }
 

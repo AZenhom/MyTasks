@@ -47,6 +47,7 @@ class AddTaskDialog(
         startDate = System.currentTimeMillis()
         endDate = System.currentTimeMillis() + 86400000 // (24 * 60 * 60 * 1000)
         if (taskToEdit != null) {
+            lblMessage.text = getString(R.string.edit_task)
             etTaskTitle.setText(taskToEdit.title)
             etTaskDescription.setText(taskToEdit.description)
             startDate = taskToEdit.startDate

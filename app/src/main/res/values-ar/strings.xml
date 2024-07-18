@@ -36,6 +36,7 @@
     <string name="are_you_sure_you_want_to_log_out">Are you sure you want to log out?</string>
     <string name="new_task">New Task</string>
     <string name="add_new_task">Add new task</string>
+    <string name="edit_task">Edit task</string>
     <string name="task_title">Task title</string>
     <string name="task_title_hint">Do the laundry</string>
     <string name="task_description">Task description (optional)</string>
@@ -45,4 +46,17 @@
     <string name="invalid_task_title">Invalid task title</string>
     <string name="invalid_date_range">Invalid date range</string>
     <string name="task_created_successfully">Task created successfully</string>
+    <string name="task_updated_successfully">Task updated successfully</string>
+    <string name="pending">Pending</string>
+    <string name="in_progress">In-Progress</string>
+    <string name="completed">Completed</string>
+    <string name="task_status">Task Status</string>
+    <string name="please_pick_status">Please choose a status</string>
+    <string name="delete_task_question_p1">Are you sure you want to delete this task?</string>
+    <string name="delete_task_question_p2">And all of it\'s subtasks as well?</string>
+    <string name="delete_task">Delete Task</string>
+    <string name="task_deleted_successfully">Task deleted successfully</string>
+    <string name="new_subtask">New Subtask</string>
+    <string name="task_details">Task Details</string>
+    <string name="subtasks">Subtasks</string>
 </resources>

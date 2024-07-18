@@ -1,6 +1,7 @@
 package com.ahmedzenhom.mytasks.data.repository
 
 import com.ahmedzenhom.mytasks.data.local.datastore.AccountDataStore
+import com.ahmedzenhom.mytasks.data.local.db.dao.TasksDao
 import com.ahmedzenhom.mytasks.data.model.AccountModel
 import com.ahmedzenhom.mytasks.data.model.FirebaseUserModel
 import com.ahmedzenhom.mytasks.data.remote.auth.AuthApiService
@@ -11,12 +12,14 @@ import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
     private val accountDataStore: AccountDataStore,
+    private val taskDao: TasksDao,
     private val authApiService: AuthApiService,
 ) : BaseRepository() {
 
     suspend fun logout() {
-        accountDataStore.clear()
         FirebaseAuth.getInstance().signOut()
+        accountDataStore.clear()
+        taskDao.deleteAllTask()
     }
 
     // Remote

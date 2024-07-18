@@ -93,12 +93,17 @@ class TasksRepository @Inject constructor(
             if (tasksToUpdateDown.size > 1 && task.status == COMPLETED.value) {
                 // If all tasks are marked completed, then return error
                 return@execute (false to R.string.all_subtasks_are_completed_error)
-            }
-            while (tasksToUpdateDown.isNotEmpty()) {
+            } else if (tasksToUpdateDown.size == 1 && task.status == COMPLETED.value) {
                 val currentTask = tasksToUpdateDown.removeFirst()
-                if (currentTask.status == COMPLETED.value && tasksToUpdateDown.size > 1) continue
                 currentTask.status = status.value
                 tasksDao.updateTask(currentTask)
+            } else {
+                while (tasksToUpdateDown.isNotEmpty()) {
+                    val currentTask = tasksToUpdateDown.removeFirst()
+                    if (currentTask.status == COMPLETED.value) continue
+                    currentTask.status = status.value
+                    tasksDao.updateTask(currentTask)
+                }
             }
 
             // Changing the status all the way up
