@@ -88,9 +88,8 @@ fun TaskModel.getStatusColor(): Int {
 }
 
 @ColorRes
-private fun TaskStatus.colorRes(isExpired: Boolean = false) =
-    if (isExpired) R.color.colorStatusRed else when (this) {
-        TaskStatus.PENDING -> R.color.colorStatusGray
-        TaskStatus.IN_PROGRESS -> R.color.colorStatusOrange
-        TaskStatus.COMPLETED -> R.color.colorStatusGreen
-    }
+private fun TaskStatus.colorRes(isExpired: Boolean = false) = when (this) {
+    TaskStatus.PENDING -> if (isExpired) R.color.colorStatusRed else R.color.colorStatusGray
+    TaskStatus.IN_PROGRESS -> if (isExpired) R.color.colorStatusRed else R.color.colorStatusOrange
+    TaskStatus.COMPLETED -> R.color.colorStatusGreen
+}

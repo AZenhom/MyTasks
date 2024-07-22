@@ -294,6 +294,43 @@ class TaskDaoTest {
         assertEquals(tasksRepository.getTaskById(7)!!.status, TaskStatus.COMPLETED)
         assertEquals(tasksRepository.getTaskById(8)!!.status, TaskStatus.COMPLETED)
 
+        tasksRepository.createNewTask(title = "Task 1 - 1 - 4", startDate = 1, endDate = 2, parentTaskId = 3) // ID 9
+        assertTrue(tasksRepository.updateTaskStatus(4, TaskStatus.PENDING).first)
+        assertEquals(tasksRepository.getTaskById(1)!!.status, TaskStatus.PENDING)
+        assertEquals(tasksRepository.getTaskById(2)!!.status, TaskStatus.PENDING)
+        assertEquals(tasksRepository.getTaskById(3)!!.status, TaskStatus.PENDING)
+        assertEquals(tasksRepository.getTaskById(4)!!.status, TaskStatus.PENDING)
+        assertEquals(tasksRepository.getTaskById(5)!!.status, TaskStatus.COMPLETED)
+        assertEquals(tasksRepository.getTaskById(6)!!.status, TaskStatus.COMPLETED)
+        assertEquals(tasksRepository.getTaskById(7)!!.status, TaskStatus.COMPLETED)
+        assertEquals(tasksRepository.getTaskById(8)!!.status, TaskStatus.COMPLETED)
+        assertEquals(tasksRepository.getTaskById(9)!!.status, TaskStatus.PENDING)
+
+        tasksRepository.deleteTask(9)
+        assertTrue(tasksRepository.updateTaskStatus(4, TaskStatus.PENDING).first)
+        assertEquals(tasksRepository.getTaskById(1)!!.status, TaskStatus.PENDING)
+        assertEquals(tasksRepository.getTaskById(2)!!.status, TaskStatus.PENDING)
+        assertEquals(tasksRepository.getTaskById(3)!!.status, TaskStatus.COMPLETED)
+        assertEquals(tasksRepository.getTaskById(4)!!.status, TaskStatus.PENDING)
+        assertEquals(tasksRepository.getTaskById(5)!!.status, TaskStatus.COMPLETED)
+        assertEquals(tasksRepository.getTaskById(6)!!.status, TaskStatus.COMPLETED)
+        assertEquals(tasksRepository.getTaskById(7)!!.status, TaskStatus.COMPLETED)
+        assertEquals(tasksRepository.getTaskById(8)!!.status, TaskStatus.COMPLETED)
+
+        tasksRepository.deleteTask(9)
+        assertTrue(tasksRepository.updateTaskStatus(6, TaskStatus.PENDING).first)
+        assertTrue(tasksRepository.updateTaskStatus(7, TaskStatus.PENDING).first)
+        assertTrue(tasksRepository.updateTaskStatus(8, TaskStatus.PENDING).first)
+        assertTrue(tasksRepository.updateTaskStatus(1, TaskStatus.COMPLETED).first)
+        assertEquals(tasksRepository.getTaskById(1)!!.status, TaskStatus.COMPLETED)
+        assertEquals(tasksRepository.getTaskById(2)!!.status, TaskStatus.PENDING)
+        assertEquals(tasksRepository.getTaskById(3)!!.status, TaskStatus.COMPLETED)
+        assertEquals(tasksRepository.getTaskById(4)!!.status, TaskStatus.COMPLETED)
+        assertEquals(tasksRepository.getTaskById(5)!!.status, TaskStatus.COMPLETED)
+        assertEquals(tasksRepository.getTaskById(6)!!.status, TaskStatus.COMPLETED)
+        assertEquals(tasksRepository.getTaskById(7)!!.status, TaskStatus.COMPLETED)
+        assertEquals(tasksRepository.getTaskById(8)!!.status, TaskStatus.COMPLETED)
+
     }
 
 

@@ -112,7 +112,6 @@ class PhoneAuthViewModel @Inject constructor(
                     val user = task.result!!.user!!
                     safeLauncher {
                         authRepository.saveFirebaseUser(user)
-                        authRepository.refreshAndSaveIdToken()
                         _onPhoneAuthCompletedLiveData.value = true
                     }
                 } else { // Wrong Code

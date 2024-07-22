@@ -8,7 +8,6 @@ import com.ahmedzenhom.mytasks.data.model.FirebaseUserModel
 import com.ahmedzenhom.mytasks.data.remote.auth.AuthApiService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
@@ -18,7 +17,7 @@ class AuthRepository @Inject constructor(
     private val authApiService: AuthApiService,
 ) : BaseRepository() {
 
-    suspend fun logout() {
+    suspend fun logout() = execute {
         FirebaseAuth.getInstance().signOut()
         accountDataStore.clear()
         taskDao.deleteAllTask()
@@ -45,21 +44,15 @@ class AuthRepository @Inject constructor(
 
     // Datastore
 
-    suspend fun getAccount() = accountDataStore.getAccountModel()
+    suspend fun getAccount() = execute { return@execute accountDataStore.getAccountModel() }
 
-    suspend fun saveFirebaseUser(firebaseUser: FirebaseUser) {
+    suspend fun saveFirebaseUser(firebaseUser: FirebaseUser) = execute {
         accountDataStore
             .setFirebaseUser(FirebaseUserModel.fromFirebaseUser(firebaseUser))
     }
 
-    suspend fun saveAccountModel(model: AccountModel) {
+    suspend fun saveAccountModel(model: AccountModel) = execute {
         accountDataStore.setAccountModel(model)
-    }
-
-    suspend fun refreshAndSaveIdToken() {
-        val token =
-            FirebaseAuth.getInstance().currentUser?.getIdToken(true)?.await()?.token ?: return
-        accountDataStore.setAccessToken(token)
     }
 
 }

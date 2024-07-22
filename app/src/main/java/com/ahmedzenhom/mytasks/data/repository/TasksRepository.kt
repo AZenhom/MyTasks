@@ -14,6 +14,9 @@ import com.ahmedzenhom.mytasks.data.model.TaskStatus.PENDING
 import com.ahmedzenhom.mytasks.data.model.TasksSnapshotModel
 import com.ahmedzenhom.mytasks.data.model.toEntity
 import com.ahmedzenhom.mytasks.data.remote.firebase_rest.FirebaseRestApiService
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class TasksRepository @Inject constructor(
@@ -40,10 +43,7 @@ class TasksRepository @Inject constructor(
         val lastLocalUpdate = settingsDataStore!!.getLastTasksLocalUpdate()
         val lastRemoteSnapshot = getLastTasksSnapshot()
         if (lastLocalUpdate > (lastRemoteSnapshot.updatedAt ?: 0)) {
-            firebaseRestApiService!!.setLastTasksSnapshot(
-                accountDataStore!!.getAccountModel()?.id ?: return,
-                TasksSnapshotModel(localTasks, lastLocalUpdate)
-            )
+            setLastTasksSnapshot(lastLocalUpdate, localTasks)
         } else if (lastLocalUpdate < (lastRemoteSnapshot.updatedAt ?: 0)) {
             tasksDao.deleteAllTask()
             tasksDao.insertTasks(
@@ -60,12 +60,48 @@ class TasksRepository @Inject constructor(
     // Remote
 
     private suspend fun getLastTasksSnapshot(): TasksSnapshotModel {
+        if (!refreshAccessTokenIfNeeded()) return TasksSnapshotModel(emptyList(), 0)
         return try {
             firebaseRestApiService!!.getLastTasksSnapshot(accountDataStore!!.getAccountModel()!!.id!!)
         } catch (e: Exception) {
             TasksSnapshotModel(emptyList(), 0)
         }
     }
+
+    private suspend fun setLastTasksSnapshot(
+        lastLocalUpdate: Long,
+        localTasks: List<TaskModel>
+    ): Boolean {
+        if (!refreshAccessTokenIfNeeded()) return false
+        return try {
+            firebaseRestApiService!!.setLastTasksSnapshot(
+                accountDataStore!!.getAccountModel()?.id ?: return false,
+                TasksSnapshotModel(localTasks, lastLocalUpdate)
+            )
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private suspend fun refreshAccessTokenIfNeeded(): Boolean = execute {
+        val oneHour = 60 * 60 * 1000
+        if (accountDataStore!!.getAccountModel() == null) return@execute false
+        if (System.currentTimeMillis() < accountDataStore.getAccessTokenLastRefresh().plus(oneHour)
+        ) return@execute true
+        try {
+            val token =
+                FirebaseAuth.getInstance().currentUser?.getIdToken(true)?.await()?.token
+                    ?: return@execute false
+            accountDataStore.setAccessTokenLastRefresh(System.currentTimeMillis())
+            accountDataStore.setAccessToken(token)
+            return@execute true
+        } catch (e: FirebaseNetworkException) {
+            e.printStackTrace()
+            return@execute false
+        }
+    }
+
     // Local
 
     suspend fun getAllTasks(): List<TaskModel> = execute {
@@ -105,8 +141,7 @@ class TasksRepository @Inject constructor(
             depth = parentTaskEntity?.depth?.plus(1) ?: 0
         )
         tasksDao.insertTasks(listOf(taskEntity))
-        if (taskEntity.status == PENDING.value && parentTaskId != null)
-            updateTaskStatus(parentTaskId, PENDING)
+        parentTaskId?.let { adjustParentsTasksStatusAllTheWayUp(it) }
         setLastLocalUpdateNow()
     }
 
@@ -133,45 +168,27 @@ class TasksRepository @Inject constructor(
             // return if nothing to change
             if (status.value == task.status) return@execute (true to null)
 
-            // Changing the status all the way down (Including the task itself)
-            val tasksToUpdateDown = ArrayDeque<TaskEntity>()
-            tasksToUpdateDown.addLast(task)
-            for (i in 0 until tasksToUpdateDown.size) {
-                val subTasks = tasksDao.getSubTasksByParentId(tasksToUpdateDown[i].id)
-                subTasks.forEach { tasksToUpdateDown.addLast(it) }
-            }
-            if (tasksToUpdateDown.size > 1 && task.status == COMPLETED.value) {
-                // If all tasks are marked completed, then return error
+            val hasChildren = tasksDao.getSubTasksByParentId(task.id).isNotEmpty()
+            if (!hasChildren) {
+                task.status = status.value
+                tasksDao.updateTask(task)
+            } else if (task.status == COMPLETED.value) {
                 return@execute (false to R.string.all_subtasks_are_completed_error)
-            } else if (tasksToUpdateDown.size == 1 && task.status == COMPLETED.value) {
-                val currentTask = tasksToUpdateDown.removeFirst()
-                currentTask.status = status.value
-                tasksDao.updateTask(currentTask)
-            } else {
+            } else { // Update status all the way down
+                val tasksToUpdateDown = ArrayDeque<TaskEntity>()
+                tasksToUpdateDown.addLast(task)
                 while (tasksToUpdateDown.isNotEmpty()) {
                     val currentTask = tasksToUpdateDown.removeFirst()
-                    if (currentTask.status == COMPLETED.value) continue
-                    currentTask.status = status.value
-                    tasksDao.updateTask(currentTask)
+                    val subTasks = tasksDao.getSubTasksByParentId(currentTask.id)
+                    subTasks.forEach { tasksToUpdateDown.addLast(it) }
+                    if (currentTask.status != COMPLETED.value) {
+                        currentTask.status = status.value
+                        tasksDao.updateTask(currentTask)
+                    }
                 }
             }
-            setLastLocalUpdateNow()
-
-            // Changing the status all the way up
-            var parentTask: TaskEntity? = tasksDao.getTaskById(
-                task.parentId ?: return@execute (true to null)
-            )
-            while (parentTask != null) {
-                val parentSubtasks = tasksDao.getSubTasksByParentId(parentTask.id)
-                if (parentSubtasks.all { TaskStatus.fromInt(it.status) == COMPLETED })
-                    parentTask.status = COMPLETED.value
-                else if (parentSubtasks.any { TaskStatus.fromInt(it.status) == IN_PROGRESS })
-                    parentTask.status = IN_PROGRESS.value
-                else
-                    parentTask.status = PENDING.value
-                tasksDao.updateTask(parentTask)
-                parentTask = tasksDao.getTaskById(parentTask.parentId ?: break)
-            }
+            // Update status all the way up
+            task.parentId?.let { adjustParentsTasksStatusAllTheWayUp(it) }
 
             setLastLocalUpdateNow()
             return@execute (true to null)
@@ -187,7 +204,23 @@ class TasksRepository @Inject constructor(
             val subTasks = tasksDao.getSubTasksByParentId(currentTask.id)
             subTasks.forEach { tasksToDelete.addLast(it) }
         }
+        task.parentId?.let { adjustParentsTasksStatusAllTheWayUp(it) }
         setLastLocalUpdateNow()
+    }
+
+    private suspend fun adjustParentsTasksStatusAllTheWayUp(parentTaskId: Int) = execute {
+        var parentTask: TaskEntity? = tasksDao.getTaskById(parentTaskId)
+        while (parentTask != null) {
+            val parentSubtasks = tasksDao.getSubTasksByParentId(parentTask.id)
+            if (parentSubtasks.all { TaskStatus.fromInt(it.status) == COMPLETED })
+                parentTask.status = COMPLETED.value
+            else if (parentSubtasks.any { TaskStatus.fromInt(it.status) == IN_PROGRESS })
+                parentTask.status = IN_PROGRESS.value
+            else
+                parentTask.status = PENDING.value
+            tasksDao.updateTask(parentTask)
+            parentTask = tasksDao.getTaskById(parentTask.parentId ?: break)
+        }
     }
 
     // Utils

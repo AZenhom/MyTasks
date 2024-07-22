@@ -2,7 +2,6 @@ package com.ahmedzenhom.mytasks.ui.tasks.task_internal
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import androidx.activity.viewModels
 import com.ahmedzenhom.mytasks.R
 import com.ahmedzenhom.mytasks.data.model.TaskModel
@@ -81,7 +80,9 @@ class TaskInternalActivity : BaseActivity<ActivityTaskInternalBinding, TaskInter
 
             tvEndDate.setTextColor(
                 resources.getColor(
-                    if (endDate <= System.currentTimeMillis()) R.color.colorStatusRed else R.color.textColor,
+                    if (status != TaskStatus.COMPLETED
+                        && endDate <= System.currentTimeMillis()
+                    ) R.color.colorStatusRed else R.color.textColor,
                     null
                 )
             )

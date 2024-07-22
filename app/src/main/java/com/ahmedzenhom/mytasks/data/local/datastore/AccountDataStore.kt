@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.ahmedzenhom.mytasks.data.model.AccountModel
@@ -23,6 +24,7 @@ class AccountDataStore @Inject constructor(@ApplicationContext val context: Cont
     private val accountModelPref = stringPreferencesKey("accountModel")
     private val firebaseUserPref = stringPreferencesKey("firebaseUser")
     private val accessTokenPref = stringPreferencesKey("accessToken")
+    private val accessTokenLastRefreshPref = longPreferencesKey("accessTokenLastRefresh")
 
     suspend fun setAccountModel(model: AccountModel) {
         context.accountDataStore.edit {
@@ -68,6 +70,18 @@ class AccountDataStore @Inject constructor(@ApplicationContext val context: Cont
         return context.accountDataStore.data.map {
             it[accessTokenPref]
         }
+    }
+
+    suspend fun setAccessTokenLastRefresh(value: Long) {
+        context.accountDataStore.edit {
+            it[accessTokenLastRefreshPref] = value
+        }
+    }
+
+    suspend fun getAccessTokenLastRefresh(): Long {
+        return context.accountDataStore.data.map {
+            it[accessTokenLastRefreshPref]
+        }.first() ?: 0L
     }
 
     suspend fun clear() {
